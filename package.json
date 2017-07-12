@@ -1,0 +1,23 @@
+{
+  "name": "twig-api-wrapper",
+  "version": "0.1.0",
+  "description": "wrapper functions for accessing twig-api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/buildit/twig-api-wrapper.git"
+  },
+  "keywords": [
+    "twig",
+    "twig-api"
+  ],
+  "author": "Ben Hernandez",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/buildit/twig-api-wrapper/issues"
+  },
+  "homepage": "https://github.com/buildit/twig-api-wrapper#readme"
+}
