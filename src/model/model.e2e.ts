@@ -4,8 +4,8 @@ import { pick } from "ramda";
 import { login } from "../";
 import config from "../config";
 import { cookieJar } from "../rpOptions";
-import { IEntityAttribute } from "./../interfaces";
-import { IModelCreation, IModelListResponse, IModelResponse, Model } from "./model";
+import { IEntityAttribute, IModelCreation, IModelListResponse, IModelResponse } from "./../interfaces";
+import { Model } from "./model";
 
 function newModel(): IModelCreation {
   return {
@@ -258,13 +258,13 @@ describe("Models", () => {
     });
 
     it("can get the initial changelog", async () => {
-      const changelog = await model.changelog.getLogs();
+      const changelog = await model.changelog.getList();
       expect(changelog[0].message).to.equal(newModel().commitMessage);
     });
 
     it("can get the updated changelog", async () => {
       await model.update(pick(["name", "commitMessage"], modelUpdates("new name")));
-      const changelog = await model.changelog.getLogs();
+      const changelog = await model.changelog.getList();
       expect(changelog[0].message).to.equal("new name");
     });
   });

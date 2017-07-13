@@ -1,1 +1,1 @@
-export { Sequences, ISequence } from "./sequences";
+export { Sequences } from "./sequences";

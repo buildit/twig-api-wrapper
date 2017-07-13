@@ -1,1 +1,1 @@
-export { Events, IEventListResponse, IEventResponse } from "./events";
+export { Events } from "./events";

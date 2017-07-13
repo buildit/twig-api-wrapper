@@ -1,1 +1,1 @@
-export { IModelCreation, IModelUpdate, Model } from "./model";
+export { Model } from "./model";

@@ -2,20 +2,20 @@ import { merge, pick } from "ramda";
 import * as rp from "request-promise-native";
 import { Observable } from "rxjs/Observable";
 import config from "../config";
+import { IChangelog } from "../interfaces";
 import { rpOptions } from "../rpOptions";
-
-export interface IChangelog {
-  message: string;
-  user: string;
-  timestamp: string;
-  replacement?: boolean;
-}
 
 export class Changelog {
 
   constructor(private url: string) {}
 
-  public getLogs(): Promise<IChangelog[]> {
+  /**
+   * Gets all of the changelog for a twiglet.
+   *
+   * @returns {Promise<IChangelog[]>} Promise containing the changelogs
+   * @memberof Changelog
+   */
+  public getList(): Promise<IChangelog[]> {
     return rp(rpOptions("GET", this.url))
     .then((object: { changelog: IChangelog[] }) => object.changelog);
   }

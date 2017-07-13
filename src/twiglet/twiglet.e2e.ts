@@ -3,11 +3,21 @@ import { expect } from "chai";
 import { pick } from "ramda";
 import { login } from "../";
 import config from "../config";
-import { IEntity, IEntityAttribute, ILatestCommit, ILink, INode } from "../interfaces";
+import {
+  IEntity,
+  IEntityAttribute,
+  ILatestCommit,
+  ILink,
+  INode,
+  ISequence,
+  ITwigletCreation,
+  ITwigletListResponse,
+  ITwigletResponse,
+  ITwigletUpdate,
+ } from "../interfaces";
 import { Model } from "../model";
 import { cookieJar } from "../rpOptions";
-import { ISequence } from "../sequences";
-import { ITwigletCreation, ITwigletListResponse, ITwigletResponse, ITwigletUpdate, Twiglet } from "./twiglet";
+import { Twiglet } from "./twiglet";
 
 function newTwiglet(): ITwigletCreation {
   return {
@@ -410,13 +420,13 @@ describe("Twiglets", () => {
     });
 
     it("can get the initial changelog", async () => {
-      const changelog = await twiglet.changelog.getLogs();
+      const changelog = await twiglet.changelog.getList();
       expect(changelog[0].message).to.equal(newTwiglet().commitMessage);
     });
 
     it("can get the updated changelog", async () => {
       await twiglet.update(pick(["name", "commitMessage"], twigletDetails("new name")));
-      const changelog = await twiglet.changelog.getLogs();
+      const changelog = await twiglet.changelog.getList();
       expect(changelog[0].message).to.equal("new name");
     });
   });
@@ -550,7 +560,7 @@ describe("Twiglets", () => {
       it("can delete a single event", async () => {
         let events = await twiglet.events.getList();
         const eventUrl = events.filter((e) => e.name = "event 1")[0].url;
-        const event = await twiglet.events.deleteOne(eventUrl);
+        await twiglet.events.deleteOne(eventUrl);
         events = await twiglet.events.getList();
         expect(events.every((e) => e.name !== "event 1")).to.be.true;
       });

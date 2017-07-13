@@ -1,1 +1,1 @@
-export { Changelog, IChangelog } from "./changelog";
+export { Changelog } from "./changelog";
