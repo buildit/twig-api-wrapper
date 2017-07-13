@@ -29,7 +29,7 @@ export class Sequences {
   /**
    * Creates a new sequence on the server
    *
-   * @param {{ description: string, name: string, events: string[] }} body sequence information
+   * @param {{ description: string, name: string, events: string[] }} body events is an array of event ids
    * @returns {Promise<string>} API currently returns an OK
    * @memberof Sequences
    */
@@ -41,7 +41,7 @@ export class Sequences {
    * Updates a sequence on the server, PUT-like call.
    *
    * @param {string} url the url representing the sequence on the server
-   * @param {{ description: string, name: string, events: string[] }} body sequence information
+   * @param {{ description: string, name: string, events: string[] }} body events is an array of event ids
    * @returns {Promise<ISequence>} returns the sequence wrapped in a promise.
    * @memberof Sequences
    */

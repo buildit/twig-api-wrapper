@@ -2,7 +2,7 @@
   "name": "twig-api-wrapper",
   "version": "0.1.0",
   "description": "wrapper functions for accessing twig-api",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "nyc mocha '**/*.spec.ts'",
     "test:e2e": "mocha '**/*.e2e.ts'"

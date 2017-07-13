@@ -32,7 +32,22 @@ export class Model {
    * @returns {Promise<Model>} an Model instance representing the newly created model
    * @memberof Model
    */
-  public static create(body: IModelCreation): Promise<Model> {
+  public static create(body: {
+        name: string;
+        commitMessage: string;
+        entities: { [key: string]: {
+          class: string;
+          color?: string;
+          image: string;
+          size?: number;
+          type?: string;
+          attributes: Array<{
+            name: string;
+            dataType: string;
+            required: boolean;
+          }>;
+        } };
+      }): Promise<Model> {
     return rp(rpOptions("POST", `${config.apiUrl}/models`, body))
     .then((model: IModelResponse) => {
       return new Model(model);
@@ -100,7 +115,22 @@ export class Model {
    * @returns {Promise<void>}
    * @memberof Model
    */
-  public update(body: IModelUpdate): Promise<void> {
+  public update(body: {
+      name?: string;
+      commitMessage: string;
+      entities?: { [key: string]: {
+        class: string;
+        color?: string;
+        image: string;
+        size?: number;
+        type?: string;
+        attributes: Array<{
+          name: string;
+          dataType: string;
+          required: boolean;
+        }>;
+      } };
+    }): Promise<void> {
     const toUpdate = pick(["entities", "name", "_rev"], this);
     return rp(rpOptions("PUT", this.url, merge(toUpdate, body)))
     .then((model: IModelResponse) => {

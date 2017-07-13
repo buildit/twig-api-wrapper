@@ -7,7 +7,6 @@ import {
   ILatestCommit,
   ILink,
   INode,
-  ITwigletCreation,
   ITwigletListResponse,
   ITwigletResponse,
   ITwigletUpdate,
@@ -24,7 +23,14 @@ export class Twiglet {
     });
   }
 
-  public static create(body: ITwigletCreation): Promise<Twiglet> {
+  public static create(body: {
+        name: string;
+        description: string;
+        model?: string;
+        json?: string;
+        cloneTwiglet?: string;
+        commitMessage: string;
+      }): Promise<Twiglet> {
     return rp(rpOptions("POST", `${config.apiUrl}/twiglets`, body))
     .then((model: ITwigletResponse) => {
       return new Twiglet(model);
@@ -58,7 +64,13 @@ export class Twiglet {
     this.assignIn(twiglet);
   }
 
-  public update(body: ITwigletUpdate) {
+  public update(body: {
+        name?: string;
+        description?: string;
+        commitMessage: string;
+        nodes?: INode[];
+        links?: ILink[];
+      }) {
     const toUpdate = pick(["_rev"], this);
     return rp(rpOptions("PATCH", this.url, merge(toUpdate, body)))
     .then((twiglet: ITwigletResponse) => {
