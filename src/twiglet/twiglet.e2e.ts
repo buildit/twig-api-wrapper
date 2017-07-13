@@ -3,9 +3,10 @@ import { expect } from "chai";
 import { pick } from "ramda";
 import { login } from "../";
 import config from "../config";
+import { IEntity, IEntityAttribute, ILatestCommit, ILink, INode } from "../interfaces";
 import { Model } from "../model";
 import { cookieJar } from "../rpOptions";
-import { ILatestCommit, ILink, INode } from "./../interfaces";
+import { ISequence } from "../sequences";
 import { ITwigletCreation, ITwigletListResponse, ITwigletResponse, ITwigletUpdate, Twiglet } from "./twiglet";
 
 function newTwiglet(): ITwigletCreation {
@@ -44,29 +45,33 @@ function twigletDetails(commitMessage = ""): ITwigletUpdate {
   };
 }
 
+function newModel() {
+  return {
+    commitMessage: "initial commit",
+    entities: {
+      ent1: {
+        attributes: [] as IEntityAttribute[],
+        class: "class1",
+        image: "A",
+        type: "ent1",
+      },
+      ent2: {
+        attributes: [] as IEntityAttribute[],
+        class: "class2",
+        image: "B",
+        type: "ent2",
+      },
+    },
+    name: "WRAPPER TEST MODEL",
+  };
+}
+
 describe("Twiglets", () => {
   let model: Model;
   before(async () => {
     config.useLocal();
     await login("ben.hernandez@corp.riglet.io", "Z3nB@rnH3n");
-    model = await Model.create({
-      commitMessage: "initial commit",
-      entities: {
-        ent1: {
-          attributes: [],
-          class: "class1",
-          image: "A",
-          type: "ent1",
-        },
-        ent2: {
-          attributes: [],
-          class: "class2",
-          image: "B",
-          type: "ent2",
-        },
-      },
-      name: "WRAPPER TEST MODEL",
-    });
+    model = await Model.create(newModel());
   });
 
   after(async () => {
@@ -413,6 +418,285 @@ describe("Twiglets", () => {
       await twiglet.update(pick(["name", "commitMessage"], twigletDetails("new name")));
       const changelog = await twiglet.changelog.getLogs();
       expect(changelog[0].message).to.equal("new name");
+    });
+  });
+
+  describe("model", () => {
+    let twiglet: Twiglet;
+    before(async () => {
+      await Twiglet.create(newTwiglet());
+      const list = await Twiglet.getList();
+      const entry = list.filter((e) => e.name === newTwiglet().name)[0];
+      twiglet = await Twiglet.instance(entry.url);
+    });
+
+    after(async () => {
+      await twiglet.remove();
+    });
+
+    it("can get the model", async () => {
+      const twigletModel: { [key: string]: IEntity } = await twiglet.model.get();
+      expect(twigletModel).to.deep.equal(newModel().entities);
+    });
+
+    it("can update the model", async () => {
+      const newEntities = {
+        ent3: {
+          attributes: [] as IEntityAttribute[],
+          class: "class3",
+          image: "C",
+          type: "ent3",
+        },
+        ent4: {
+          attributes: [] as IEntityAttribute[],
+          class: "class4",
+          image: "D",
+          type: "ent4",
+        },
+      };
+      await twiglet.model.update({ entities: newEntities, commitMessage: "Updating Model" });
+      const twigletModel: { [key: string]: IEntity } = await twiglet.model.get();
+      expect(twigletModel).to.deep.equal(newEntities);
+    });
+  });
+
+  describe("events", () => {
+    let twiglet: Twiglet;
+    before(async () => {
+      await Twiglet.create(newTwiglet());
+      const list = await Twiglet.getList();
+      const entry = list.filter((e) => e.name === newTwiglet().name)[0];
+      twiglet = await Twiglet.instance(entry.url);
+      await twiglet.update(twigletDetails("adding nodes"));
+    });
+
+    after(async () => {
+      await twiglet.remove();
+    });
+
+    describe("create", () => {
+      const name = "event1";
+      before(async () => {
+        await twiglet.events.create({ name, description: "some description"});
+      });
+
+      after(async () => {
+        await twiglet.events.deleteAll();
+      });
+
+      it("can create an event", async () => {
+        const events = await twiglet.events.getList();
+        expect(events.some((event) => event.name === name)).to.be.true;
+      });
+    });
+
+    describe("deleteAll", async () => {
+      before(async () => {
+        await twiglet.events.create({ name: "event 1", description: "some description 1"});
+        await twiglet.events.create({ name: "event 2", description: "some description 2"});
+      });
+
+      it("deletes all of the events", async () => {
+        await twiglet.events.deleteAll();
+        const events = await twiglet.events.getList();
+        expect(events).to.deep.equal([]);
+      });
+    });
+
+    describe("getList", () => {
+      before(async () => {
+        await twiglet.events.create({ name: "event 1", description: "some description 1"});
+        await twiglet.events.create({ name: "event 2", description: "some description 2"});
+      });
+
+      after(async () => {
+        await twiglet.events.deleteAll();
+      });
+
+      it("gets a list of the events", async () => {
+        const events = await twiglet.events.getList();
+        expect(events.length).to.equal(2);
+      });
+    });
+
+    describe("getOne", () => {
+      before(async () => {
+        await twiglet.events.create({ name: "event 1", description: "some description 1"});
+        await twiglet.events.create({ name: "event 2", description: "some description 2"});
+      });
+
+      after(async () => {
+        await twiglet.events.deleteAll();
+      });
+
+      it("gets a list of the events", async () => {
+        const events = await twiglet.events.getList();
+        const eventUrl = events.filter((e) => e.name = "event 1")[0].url;
+        const event = await twiglet.events.getOne(eventUrl);
+        expect(event.nodes).not.to.be.undefined;
+      });
+    });
+
+    describe("deleteOne", () => {
+      before(async () => {
+        await twiglet.events.create({ name: "event 1", description: "some description 1"});
+        await twiglet.events.create({ name: "event 2", description: "some description 2"});
+      });
+
+      after(async () => {
+        await twiglet.events.deleteAll();
+      });
+
+      it("can delete a single event", async () => {
+        let events = await twiglet.events.getList();
+        const eventUrl = events.filter((e) => e.name = "event 1")[0].url;
+        const event = await twiglet.events.deleteOne(eventUrl);
+        events = await twiglet.events.getList();
+        expect(events.every((e) => e.name !== "event 1")).to.be.true;
+      });
+    });
+  });
+
+  describe("sequences", () => {
+    let twiglet: Twiglet;
+    before(async () => {
+      await Twiglet.create(newTwiglet());
+      const list = await Twiglet.getList();
+      const entry = list.filter((e) => e.name === newTwiglet().name)[0];
+      twiglet = await Twiglet.instance(entry.url);
+      await twiglet.update(twigletDetails("adding nodes"));
+      await twiglet.events.create({ name: "event 1", description: "some description 1"});
+      await twiglet.events.create({ name: "event 2", description: "some description 2"});
+      await twiglet.events.create({ name: "event 3", description: "some description 3"});
+    });
+
+    after(async () => {
+      await twiglet.remove();
+    });
+
+    describe("create", async () => {
+      after(async () => {
+        const sequences = await twiglet.sequences.getList();
+        for (const sequence of sequences) {
+          await twiglet.sequences.deleteOne(sequence.url);
+        }
+      });
+
+      it("can create a sequence", async () => {
+        const eventsList = await twiglet.events.getList();
+        const events = eventsList.filter((e) => !e.name.includes("2")).map((e) => e.id);
+        await twiglet.sequences.create({ description: "a new sequence", name: "sequence1", events});
+        const sequences = await twiglet.sequences.getList();
+        expect(sequences[0].events.length).to.equal(2);
+      });
+    });
+
+    describe("getList", async () => {
+      before(async () => {
+        const eventsList = await twiglet.events.getList();
+        let events = eventsList.filter((e) => !e.name.includes("2")).map((e) => e.id);
+        await twiglet.sequences.create({ description: "a new sequence", name: "sequence1", events});
+        events = eventsList.map((e) => e.id);
+        await twiglet.sequences.create({ description: "another sequence", name: "sequence2", events});
+      });
+
+      after(async () => {
+        const sequences = await twiglet.sequences.getList();
+        for (const sequence of sequences) {
+          await twiglet.sequences.deleteOne(sequence.url);
+        }
+      });
+
+      it("can get a list of sequences", async () => {
+        const sequences = await twiglet.sequences.getList();
+        expect(sequences.length).to.equal(2);
+      });
+    });
+
+    describe("getOne", async () => {
+      before(async () => {
+        const eventsList = await twiglet.events.getList();
+        let events = eventsList.filter((e) => !e.name.includes("2")).map((e) => e.id);
+        await twiglet.sequences.create({ description: "a new sequence", name: "sequence1", events});
+        events = eventsList.map((e) => e.id);
+        await twiglet.sequences.create({ description: "another sequence", name: "sequence2", events});
+      });
+
+      after(async () => {
+        const sequences = await twiglet.sequences.getList();
+        for (const sequence of sequences) {
+          await twiglet.sequences.deleteOne(sequence.url);
+        }
+      });
+
+      it("get a single sequence", async () => {
+        const sequences = await twiglet.sequences.getList();
+        const sequenceUrl = sequences.filter((s) => s.name === "sequence2")[0].url;
+        const sequence = await twiglet.sequences.getOne(sequenceUrl);
+        expect(sequence.events.length).to.equal(3);
+      });
+    });
+
+    describe("update", async () => {
+      let originalSequence: ISequence;
+      let updateSequence: ISequence;
+      before(async () => {
+        const eventsList = await twiglet.events.getList();
+        let events = eventsList.filter((e) => !e.name.includes("2")).map((e) => e.id);
+        await twiglet.sequences.create({ description: "a new sequence", name: "sequence1", events});
+        events = eventsList.map((e) => e.id);
+        await twiglet.sequences.create({ description: "another sequence", name: "sequence2", events});
+        let sequences = await twiglet.sequences.getList();
+        originalSequence = sequences.filter((s) => s.name === "sequence1")[0];
+        events = eventsList.filter((e) => !e.name.includes("1")).map((e) => e.id);
+        await twiglet.sequences.update(originalSequence.url, { description: "changed", name: "new name", events});
+        sequences = await twiglet.sequences.getList();
+        updateSequence = sequences.filter((s) => s.name === "new name")[0];
+      });
+
+      after(async () => {
+        const sequences = await twiglet.sequences.getList();
+        for (const s of sequences) {
+          await twiglet.sequences.deleteOne(s.url);
+        }
+      });
+
+      it("changes the name", () => {
+        expect(updateSequence).not.to.be.undefined;
+      });
+
+      it("updates the description", () => {
+        expect(updateSequence.description).to.equal("changed");
+      });
+
+      it("updates the events", () => {
+        expect(updateSequence.events).not.to.deep.equal(originalSequence.events);
+      });
+    });
+
+    describe("deleteOne", async () => {
+      before(async () => {
+        const eventsList = await twiglet.events.getList();
+        let events = eventsList.filter((e) => !e.name.includes("2")).map((e) => e.id);
+        await twiglet.sequences.create({ description: "a new sequence", name: "sequence1", events});
+        events = eventsList.map((e) => e.id);
+        await twiglet.sequences.create({ description: "another sequence", name: "sequence2", events});
+      });
+
+      after(async () => {
+        const sequences = await twiglet.sequences.getList();
+        for (const s of sequences) {
+          await twiglet.sequences.deleteOne(s.url);
+        }
+      });
+
+      it("removes the sequence", async () => {
+        let sequences = await twiglet.sequences.getList();
+        const toBeDeletedUrl = sequences.filter((s) => s.name === "sequence1")[0].url;
+        await twiglet.sequences.deleteOne(toBeDeletedUrl);
+        sequences = await twiglet.sequences.getList();
+        expect(sequences.every((s) => s.name !== "sequence1")).to.be.true;
+      });
     });
   });
 });

@@ -2,8 +2,11 @@ import { merge, pick } from "ramda";
 import * as rp from "request-promise-native";
 import { Changelog } from "../changelog";
 import config from "../config";
+import { Events } from "../events";
+import { ILatestCommit, ILink, INode } from "../interfaces";
 import { rpOptions } from "../rpOptions";
-import { ILatestCommit, ILink, INode } from "./../interfaces";
+import { Sequences } from "../sequences";
+import { TwigletModel } from "../twigletModel";
 
 export interface ITwigletCreation {
   name: string;
@@ -72,16 +75,17 @@ export class Twiglet {
   public description: string;
   public latestCommit: ILatestCommit;
   public changelog: Changelog;
+  public model: TwigletModel;
+  public events: Events;
+  public sequences: Sequences;
   private _rev: string; // tslint:disable-line variable-name
   private url: string;
-  private modelUrl: string;
-  private viewsUrl: string;
-  private jsonUrl: string;
-  private eventsUrl: string;
-  private sequencesUrl: string;
 
   constructor(twiglet: ITwigletResponse) {
     this.changelog = new Changelog(twiglet.changelog_url);
+    this.model = new TwigletModel(twiglet.model_url);
+    this.events = new Events(twiglet.events_url);
+    this.sequences = new Sequences(twiglet.sequences_url);
     this.assignIn(twiglet);
   }
 
@@ -121,12 +125,10 @@ export class Twiglet {
     this.description = twiglet.description;
     this.latestCommit = twiglet.latestCommit;
     this.changelog.updateUrl(twiglet.changelog_url);
+    this.model.updateUrl(twiglet.model_url);
+    this.events.updateUrl(twiglet.events_url);
+    this.sequences.updateUrl(twiglet.sequences_url);
     this._rev = twiglet._rev;
     this.url = twiglet.url;
-    this.modelUrl = twiglet.model_url;
-    this.viewsUrl = twiglet.views_url;
-    this.jsonUrl = twiglet.json_url;
-    this.eventsUrl = twiglet.events_url;
-    this.sequencesUrl = twiglet.sequences_url;
   }
 }
