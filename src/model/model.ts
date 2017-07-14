@@ -4,32 +4,43 @@ import { Changelog } from "../changelog";
 import config from "../config";
 import { rpOptions } from "../rpOptions";
 import {
-  IEntity,
-  ILatestCommit,
-  IModelCreation,
-  IModelListResponse,
   IModelResponse,
-  IModelUpdate,
 } from "./../interfaces";
 
 export class Model {
+
   /**
-   * Gets a list of the models on the server.
+   * Gets a list of models from the server.
    *
    * @static
-   * @returns {Promise<IModelListResponse[]>} Promise with model summaries
+   * @returns {Promise<Array<{ name: string; url: string; }>>}
    * @memberof Model
    */
-  public static getList(): Promise<IModelListResponse[]> {
+  public static getList(): Promise<Array<{ name: string; url: string; }>> {
     return rp(rpOptions("GET", `${config.apiUrl}/models`));
   }
 
   /**
-   * Creates a new model
+   * Creates a new Model.
    *
    * @static
-   * @param {IModelCreation} body the model information
-   * @returns {Promise<Model>} an Model instance representing the newly created model
+   * @param {{
+   *         name: string;
+   *         commitMessage: string;
+   *         entities: { [key: string]: {
+   *           class: string;
+   *           color?: string;
+   *           image: string;
+   *           size?: number;
+   *           type?: string;
+   *           attributes: Array<{
+   *             name: string;
+   *             dataType: string;
+   *             required: boolean;
+   *           }>;
+   *         } };
+   *       }} body
+   * @returns {Promise<Model>}
    * @memberof Model
    */
   public static create(body: {
@@ -70,12 +81,34 @@ export class Model {
   }
 
   /**
-   * The entities of the model
+   * The model's entities
    *
-   * @type {{ [key: string]: IEntity }}
+   * @type {{ [key: string]: {
+   *           class: string;
+   *           color?: string;
+   *           image: string;
+   *           size?: number;
+   *           type?: string;
+   *           attributes: Array<{
+   *             name: string;
+   *             dataType: string;
+   *             required: boolean;
+   *           }>;
+   *         } }}
    * @memberof Model
    */
-  public entities: { [key: string]: IEntity };
+  public entities: { [key: string]: {
+          class: string;
+          color?: string;
+          image: string;
+          size?: number;
+          type?: string;
+          attributes: Array<{
+            name: string;
+            dataType: string;
+            required: boolean;
+          }>;
+        } };
 
   /**
    * The name of the model
@@ -86,12 +119,22 @@ export class Model {
   public name: string;
 
   /**
-   * The most recent commit message for this model.
+   * The model's most recent commit message
    *
-   * @type {ILatestCommit}
+   * @type {{
+   *       message: string;
+   *       user: string;
+   *       timestamp: string;
+   *       doReplacement?: boolean;
+   *     }}
    * @memberof Model
    */
-  public latestCommit: ILatestCommit;
+  public latestCommit: {
+      message: string;
+      user: string;
+      timestamp: string;
+      doReplacement?: boolean;
+    };
 
   /**
    * The changelog instance for this model.
@@ -111,7 +154,22 @@ export class Model {
   /**
    * Updates the model with new information, works like a patch route.
    *
-   * @param {IModelUpdate} body must contain a commit message
+   * @param {{
+   *       name?: string;
+   *       commitMessage: string;
+   *       entities?: { [key: string]: {
+   *         class: string;
+   *         color?: string;
+   *         image: string;
+   *         size?: number;
+   *         type?: string;
+   *         attributes: Array<{
+   *           name: string;
+   *           dataType: string;
+   *           required: boolean;
+   *         }>;
+   *       } };
+   *     }} body
    * @returns {Promise<void>}
    * @memberof Model
    */
@@ -164,6 +222,6 @@ export class Model {
     this._rev = model._rev;
     this.latestCommit = model.latestCommit;
     this.url = model.url;
-    this.changelog.updateUrl(model.changelog_url);
+    this.changelog["updateUrl"](model.changelog_url); // tslint:disable-line:no-string-literal
   }
 }

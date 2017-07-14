@@ -58,7 +58,7 @@ export class Events {
     return rp(rpOptions("DELETE", this.eventsUrl));
   }
 
-  public updateUrl(url: string) {
+  private updateUrl(url: string) {
     this.eventsUrl = url;
   }
 }

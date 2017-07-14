@@ -20,7 +20,7 @@ export class Changelog {
     .then((object: { changelog: IChangelog[] }) => object.changelog);
   }
 
-  public updateUrl(url: string) {
+  private updateUrl(url: string) {
     this.url = url;
   }
 }

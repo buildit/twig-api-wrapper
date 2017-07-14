@@ -60,7 +60,7 @@ export class Sequences {
     return rp(rpOptions("DELETE", url));
   }
 
-  public updateUrl(url: string) {
+  private updateUrl(url: string) {
     this.sequencesUrl = url;
   }
 }
