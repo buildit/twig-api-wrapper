@@ -1,7 +1,6 @@
 import { omit } from "ramda";
 import * as request from "request";
 import { jar, OptionsWithUri } from "request-promise-native";
-import config from "./config";
 export const cookieJar = jar();
 
 export function rpOptions(method: Method, uri: string, body?: any): OptionsWithUri {

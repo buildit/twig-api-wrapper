@@ -2,7 +2,7 @@
 import { expect } from "chai";
 import { pick } from "ramda";
 import { login } from "../";
-import config from "../config";
+import { config } from "../config";
 import {
   IEntity,
   IEntityAttribute,

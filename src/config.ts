@@ -18,6 +18,4 @@ export class Config {
   }
 }
 
-const config = new Config();
-
-export default config;
+export const config = new Config();

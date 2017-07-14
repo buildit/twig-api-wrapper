@@ -2,7 +2,7 @@
 import { expect } from "chai";
 import { pick } from "ramda";
 import { login } from "../";
-import config from "../config";
+import { config } from "../config";
 import { cookieJar } from "../rpOptions";
 import { IEntityAttribute, IModelCreation, IModelListResponse, IModelResponse } from "./../interfaces";
 import { Model } from "./model";

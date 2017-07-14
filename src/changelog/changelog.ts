@@ -1,7 +1,6 @@
 import { merge, pick } from "ramda";
 import * as rp from "request-promise-native";
 import { Observable } from "rxjs/Observable";
-import config from "../config";
 import { IChangelog } from "../interfaces";
 import { rpOptions } from "../rpOptions";
 

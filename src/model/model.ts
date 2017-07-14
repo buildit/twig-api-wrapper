@@ -1,7 +1,7 @@
 import { merge, pick } from "ramda";
 import * as rp from "request-promise-native";
 import { Changelog } from "../changelog";
-import config from "../config";
+import { config } from "../config";
 import { rpOptions } from "../rpOptions";
 import {
   IModelResponse,

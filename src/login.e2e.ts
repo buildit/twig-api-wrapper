@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { login } from "./";
-import config from "./config";
+import { config } from "./config";
 import { cookieJar } from "./rpOptions";
 
 describe("login stores a cookie", () => {
