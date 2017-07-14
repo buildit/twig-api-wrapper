@@ -4,12 +4,8 @@ import { Changelog } from "../changelog";
 import config from "../config";
 import { Events } from "../events";
 import {
-  ILatestCommit,
-  ILink,
-  INode,
   ITwigletListResponse,
   ITwigletResponse,
-  ITwigletUpdate,
 } from "../interfaces";
 import { rpOptions } from "../rpOptions";
 import { Sequences } from "../sequences";
@@ -194,8 +190,26 @@ export class Twiglet {
    *         name?: string;
    *         description?: string;
    *         commitMessage: string;
-   *         nodes?: INode[];
-   *         links?: ILink[];
+   *         nodes?: Array<{
+   *             attrs?: Array<{ key: string; value?: string; }>;
+   *             id: string;
+   *             location?: string;
+   *             name: string;
+   *             type: string;
+   *             x?: number;
+   *             y?: number;
+   *             _color?: string;
+   *             _size?: string;
+   *           }>;
+   *         links?: Array<{
+   *             attrs?: Array<{ key: string; value?: string; }>;
+   *             association?: string;
+   *             id: string;
+   *             source: string;
+   *             target: string;
+   *             _color?: string;
+   *             _size?: number;
+   *           }>;
    *       }} body
    * @returns {Promise<void>}
    * @memberof Twiglet
@@ -204,8 +218,26 @@ export class Twiglet {
         name?: string;
         description?: string;
         commitMessage: string;
-        nodes?: INode[];
-        links?: ILink[];
+        nodes?: Array<{
+            attrs?: Array<{ key: string; value?: string; }>;
+            id: string;
+            location?: string;
+            name: string;
+            type: string;
+            x?: number;
+            y?: number;
+            _color?: string;
+            _size?: string;
+          }>;
+        links?: Array<{
+            attrs?: Array<{ key: string; value?: string; }>;
+            association?: string;
+            id: string;
+            source: string;
+            target: string;
+            _color?: string;
+            _size?: number;
+          }>;
       }): Promise<void> {
     const toUpdate = pick(["_rev"], this);
     return rp(rpOptions("PATCH", this.url, merge(toUpdate, body)))
