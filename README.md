@@ -194,9 +194,11 @@ async function main() {
 ```
 
 ## Other Methods
+
 There are a lot of other methods inside this wrapper. At the time of this writing, every method on the API has a corresponding method here. To get a good feel for how to use them, check out the e2e tests accompanying Models and Twiglets.
 
 ## Contributing
+
 Feel free to update/add methods as needed. This package is published on npm under the @buidit organization. Write unit/e2e tests as appropriate then version and publish. Since these are mostly just wrappers around API calls, I found it was more useful to write e2e tests for most methods.
 
 ```Shell
