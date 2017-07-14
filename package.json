@@ -1,5 +1,5 @@
 {
-  "name": "twig-api-wrapper",
+  "name": "@buildit/twig-api-wrapper",
   "version": "0.1.0",
   "description": "wrapper functions for accessing twig-api",
   "main": "dist/index.js",
