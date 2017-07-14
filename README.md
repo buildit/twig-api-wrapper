@@ -28,7 +28,7 @@ const { config, login, Twiglet, Model } = require('@buildit/twig-api-wrapper');
 
 (async function main() {
   try {
-    config.useLocal();
+    config.useLocal(); // also .useStaging() and .useProduction()
     await login("ben.hernandez@corp.riglet.io", "my super secure password")
   } catch (error) {
     console.err(error);
@@ -154,9 +154,9 @@ async function main() {
     /**
      * ...
      * { id: '46a15ed5-6a0d-4bbf-8fde-5696a5f0147b',
-     * name: 'event 1',
-     * description: 'the first event',
-     * url: 'http://localhost:3000/v2/twiglets/Emails/events/46a15ed5-6a0d-4bbf-8fde-5696a5f0147b' } ]
+     *   name: 'event 1',
+     *   description: 'the first event',
+     *   url: 'http://localhost:3000/v2/twiglets/Emails/events/46a15ed5-6a0d-4bbf-8fde-5696a5f0147b' } ]
      */
 
     // deleting an event
@@ -176,13 +176,13 @@ async function main() {
     /**
      * ...
      * { description: 'a series of unfortunate events',
-     * events:
-     *   [ 'eafd9c10-f622-4050-b18c-29764ce0c375',
-     *     'cbfced59-08c6-406b-b457-d4ca04ff3efc',
-     *     'b750855b-c590-4cb2-9dea-eff96269c3e3' ],
-     * id: 'e6c5f16e-ad24-443b-a825-2cbc0ea869d3',
-     * name: 'sequence 1',
-     * url: 'http://localhost:3000/v2/twiglets/Emails/sequences/e6c5f16e-ad24-443b-a825-2cbc0ea869d3' } ]
+     *   events:
+     *     [ 'eafd9c10-f622-4050-b18c-29764ce0c375',
+     *       'cbfced59-08c6-406b-b457-d4ca04ff3efc',
+     *       'b750855b-c590-4cb2-9dea-eff96269c3e3' ],
+     *   id: 'e6c5f16e-ad24-443b-a825-2cbc0ea869d3',
+     *   name: 'sequence 1',
+     *   url: 'http://localhost:3000/v2/twiglets/Emails/sequences/e6c5f16e-ad24-443b-a825-2cbc0ea869d3' } ]
      */
 
     // deleting a sequence
