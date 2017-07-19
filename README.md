@@ -5,7 +5,7 @@
 This project is a nodejs helper library for getting data into [Twig](http://github.com/buildit/twig). It is designed to abstract out all of the HTTP calls necessary so you can get right into the data entry. This project is written in typescript and published with definition files allowing you to take advantage of editors with proper code completion such as [vscode](https://code.visualstudio.com/). If your editor supports it, it will also help with paremeters for each method.
 ![intellisense demo](images/intellisense.png)
 
-The entire library is promise based and in these examples we will be taking advantage of the async/await spec included by default in node >= v7.6 and IIFEs
+The entire library is promise based and in these examples we will be taking advantage of IIFEs and the async/await spec included by default in node >= v7.6
 
 ## Table of Contents
 
@@ -199,7 +199,7 @@ There are a lot of other methods inside this wrapper. At the time of this writin
 
 ## Contributing
 
-Feel free to update/add methods as needed. This package is published on npm under the @buidit organization. Write unit/e2e tests as appropriate then version and publish. Since these are mostly just wrappers around API calls, I found it was more useful to write e2e tests for most methods.
+Feel free to update/add methods as needed. This package is published on npm under the @buildit organization. Write unit/e2e tests as appropriate then version and publish. Since these are mostly just wrappers around API calls, I found it was more useful to write e2e tests for most methods.
 
 ```Shell
 npm version major | minor | patch
