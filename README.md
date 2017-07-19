@@ -83,7 +83,7 @@ const { config, login, Twiglet, Model } = require('@buildit/twig-api-wrapper');
 ## Twiglet Manipulation
 
 ```JavaScript
-async function main() {
+(async function main() {
   try {
     // setup
     config.useLocal();
@@ -163,7 +163,7 @@ async function main() {
     await emails.events.deleteOne('http://localhost:3000/v2/twiglets/Emails/events/46a15ed5-6a0d-4bbf-8fde-5696a5f0147b');
 
     // Create a sequence
-    // Note, a sequence is just an array of event IDs so we are going
+    // Note, a sequence is just an array of event IDs so we are going to use ids from the list above
     await emails.sequences.create({
       description: 'a series of unfortunate events',
       name: 'sequence 1',
