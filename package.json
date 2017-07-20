@@ -4,6 +4,8 @@
   "description": "wrapper functions for accessing twig-api",
   "main": "dist/index.js",
   "scripts": {
+    "build": "tsc",
+    "lint": "tslint 'src/**/*.ts'",
     "test": "nyc mocha '**/*.spec.ts'",
     "test:e2e": "mocha '**/*.e2e.ts'"
   },
